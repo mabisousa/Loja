@@ -1,24 +1,43 @@
 package br.com.senai.controller.produto;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import br.com.senai.model.ProdutoModel;
+import br.com.dao.DataBaseConnection;
 
 public class ListaProduto {
-	public List<ProdutoModel> consultarProdutos(List<ProdutoModel> produtos) {
 
-		if (produtos.size() <= 0) {
-			System.out.println("Não há produtos para serem listados");
+	private Connection connection;
+	
+	public ListaProduto() {
+		connection = DataBaseConnection.getInstance().getConnection();
+	}
+	
+	public ResultSet listarProdutos() {
+		System.out.println("\n----- PRODUTOS CADASTRADOS -----\n");
+		System.out.printf("| %2s | %15s | %8s | %4s | %9s |\n", "ID", "Produto", "Preço", "Qtd", "R$ Total");
+		
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = connection.prepareStatement("SELECT * FROM produto;");
+			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				System.out.printf("| %2s | %15s | %8s | %4s | %9s |\n",
+					resultSet.getInt("codigoDoProduto"),
+					resultSet.getString("nomdeDoProduto"),
+					resultSet.getDouble("precoDoProduto"),
+					resultSet.getInt("quantidadeDeProduto"),
+					resultSet.getDouble("saldoEmEstoque")
+					);
+			}
+			
+			return resultSet;
+		} catch (Exception e) {
 			return null;
 		}
-		System.out.println("\n----- PRODUTOS CADASTRASDOS -----\n");
-		System.out.printf("| %2s | %10s | %8s | %4s | %9s |\n", "ID", "Produto", "Preço", "Qtd", "R$  total");
-		for (int i = 0; i < produtos.size(); i++) {
-			System.out.printf("| %2s | %10s | R$%6.2f | %4s | R$%7.2f |\n", i + 1, produtos.get(i).getNomeDoProduto(),
-					produtos.get(i).getPrecoDoProduto(), produtos.get(i).getQuantidadeDeProduto(),
-					produtos.get(i).getSaldoEmEstoque());
-		}
-
-		return produtos;
+		
 	}
+	
 }

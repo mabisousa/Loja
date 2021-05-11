@@ -38,10 +38,10 @@ public class MainProgram {
 
 			switch (opc) {
 			case 1:
-				produtos.add(cadastarProduto.cadastrarProduto());
+				cadastarProduto.cadastrarProduto();
 				break;
 			case 2:
-				listaProduto.consultarProdutos(produtos);
+				listaProduto.listarProdutos();
 				break;
 			case 3:
 				editaProduto.editarProduto(produtos);

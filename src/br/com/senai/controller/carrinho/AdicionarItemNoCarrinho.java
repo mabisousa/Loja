@@ -14,13 +14,13 @@ public class AdicionarItemNoCarrinho {
 	EditaProduto editaProduto = new EditaProduto();
 	public CarrinhoModel cadastrarItemNoCarrinho(List<ProdutoModel> produtos) {
 		CarrinhoModel carrinho = new CarrinhoModel();
-
+		
 		if (produtos.size() <= 0) {
 			System.out.println("Não há produtos cadastrados");
 			return null;
 		}
 		
-		listaProduto.consultarProdutos(produtos);
+		listaProduto.listarProdutos();
 
 		System.out.println("----- CARRINHO -----");
 

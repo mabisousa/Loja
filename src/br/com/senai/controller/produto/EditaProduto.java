@@ -17,7 +17,8 @@ public class EditaProduto {
 			System.out.println("Não há produtos para serem editados");
 			return null;
 		}
-		listaProduto.consultarProdutos(produtos);
+		listaProduto.listarProdutos();
+
 		System.out.println("--------- EDITAR DADOS DE PRODUTOS ----------");
 		System.out.println("Informe o ID do produto: ");
 		int id = tec.nextInt() - 1;

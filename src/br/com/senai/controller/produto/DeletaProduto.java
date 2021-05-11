@@ -15,7 +15,8 @@ public class DeletaProduto {
 			return;
 		}
 
-		listaProduto.consultarProdutos(produtos);
+		listaProduto.listarProdutos();
+
 
 		System.out.println("Informe o ID do produto  ser removido");
 		int id = tec.nextInt();

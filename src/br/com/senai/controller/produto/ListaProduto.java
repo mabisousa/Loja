@@ -14,14 +14,22 @@ public class ListaProduto {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 	
-	public ResultSet listarProdutos() {
-		System.out.println("\n----- PRODUTOS CADASTRADOS -----\n");
-		System.out.printf("| %2s | %15s | %8s | %4s | %9s |\n", "ID", "Produto", "Preço", "Qtd", "R$ Total");
-		
+	public ResultSet listarProdutos() {		
 		PreparedStatement preparedStatement;
 		try {
-			preparedStatement = connection.prepareStatement("SELECT * FROM produto;");
+			String sql = "SELECT * FROM produto;";
+			preparedStatement = connection.prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
+			
+			if(!resultSet.next()) {
+				System.out.println("Não possui dados cadastrados");
+				return null;
+			}
+			
+			System.out.println("\n----- PRODUTOS CADASTRADOS -----\n");
+			System.out.printf("| %2s | %15s | %8s | %4s | %9s |\n", "ID", "Produto", "Preço", "Qtd", "R$ Total");
+			
+			resultSet.previous();
 			
 			while(resultSet.next()) {
 				System.out.printf("| %2s | %15s | %8s | %4s | %9s |\n",

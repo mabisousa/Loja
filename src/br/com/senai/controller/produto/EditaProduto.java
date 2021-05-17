@@ -20,7 +20,7 @@ public class EditaProduto {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 
-	public ProdutoModel editarProduto(List<ProdutoModel> produtos) {
+	public ProdutoModel editarProduto() {
 		PreparedStatement preparedStatement;
 		produto = new ProdutoModel();
 		listaProduto = new ListaProduto();

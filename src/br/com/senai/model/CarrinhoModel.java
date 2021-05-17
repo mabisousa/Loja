@@ -7,6 +7,7 @@ public class CarrinhoModel {
 	private int idDoProduto;
 	private ProdutoModel produtoModel;
 	private double valorTotalPorItem;
+
 	public int getQuantidadeDeItensNoCarrinho() {
 		return quantidadeDeItensNoCarrinho;
 	}

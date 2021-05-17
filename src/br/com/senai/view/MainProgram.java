@@ -44,19 +44,19 @@ public class MainProgram {
 				listaProduto.listarProdutos();
 				break;
 			case 3:
-				editaProduto.editarProduto(produtos);
+				editaProduto.editarProduto();
 				break;
 			case 4:
-				deletaProduto.removerProdutos(produtos);
+				deletaProduto.removerProdutos();
 				break;
 			case 5:
-				itensNoCarrinho.add(adicionarCarrinho.cadastrarItemNoCarrinho(produtos));
+				adicionarCarrinho.cadastrarItemNoCarrinho();
 				break;
 			case 6:
-				listaCarrinho.exibirCarrinho(itensNoCarrinho);
+				listaCarrinho.exibirCarrinho();
 				break;
 			case 7:
-				listaCarrinho.gerarCupom(itensNoCarrinho, cliente);
+				listaCarrinho.gerarCupom(cliente);
 				break;
 			case 9:
 				sair = true;

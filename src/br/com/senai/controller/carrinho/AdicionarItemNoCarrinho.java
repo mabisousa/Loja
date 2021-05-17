@@ -1,51 +1,81 @@
 package br.com.senai.controller.carrinho;
 
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Scanner;
 
-import br.com.senai.controller.produto.EditaProduto;
+import br.com.dao.DataBaseConnection;
 import br.com.senai.controller.produto.ListaProduto;
 import br.com.senai.model.CarrinhoModel;
 import br.com.senai.model.ProdutoModel;
 
 public class AdicionarItemNoCarrinho {
-	Scanner tec = new Scanner(System.in);
-	ListaProduto listaProduto = new ListaProduto();
-	EditaProduto editaProduto = new EditaProduto();
-	public CarrinhoModel cadastrarItemNoCarrinho(List<ProdutoModel> produtos) {
-		CarrinhoModel carrinho = new CarrinhoModel();
-		
-		if (produtos.size() <= 0) {
-			System.out.println("Não há produtos cadastrados");
-			return null;
-		}
-		
-		listaProduto.listarProdutos();
+	private Scanner tec = new Scanner(System.in);
+	private ListaProduto listaProduto = new ListaProduto();
+	private ProdutoModel produtoModel = new ProdutoModel();
+
+	CarrinhoModel carrinho = new CarrinhoModel();
+
+	private Connection connection;
+
+	public AdicionarItemNoCarrinho() {
+		connection = DataBaseConnection.getInstance().getConnection();
+	}
+
+	public ResultSet cadastrarItemNoCarrinho() {
+		PreparedStatement preparedStatement;
 
 		System.out.println("----- CARRINHO -----");
+		listaProduto.listarProdutos();
 
 		System.out.println("Informe o ID do produto: ");
 		carrinho.setIdDoProduto(tec.nextInt());
-		int idDoProduto = carrinho.getIdDoProduto() - 1;
-
-		if (carrinho.getIdDoProduto()-1 >= produtos.size()) {
-			System.out.println("Produto não cadastrado");
-			return null;
-		}
-
+		int idDoProduto = carrinho.getIdDoProduto();
 		System.out.println("Informe a quantidade desejada: ");
 		carrinho.setQuantidadeDeItensNoCarrinho(tec.nextInt());
+		carrinho.setValorTotalPorItem(carrinho.getQuantidadeDeItensNoCarrinho() * produtoModel.getPrecoDoProduto());
+		try {
+			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
 
-		if (carrinho.getQuantidadeDeItensNoCarrinho() > produtos.get(idDoProduto).getQuantidadeDeProduto()) {
-			System.out.println("Esse produto não possui toda essa quantidade");
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoProduto);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (!resultSet.next()) {
+				System.out.println("Este produto não existe");
+				return null;
+			} else {
+				produtoModel.setNomeDoProduto(resultSet.getString("nomdeDoProduto"));
+				produtoModel.setPrecoDoProduto(resultSet.getDouble("precoDoProduto"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
-		editaProduto.atualizaQuantidadeEValorTotal(produtos, carrinho.getQuantidadeDeItensNoCarrinho(), idDoProduto);
 		
-		carrinho.setProdutoModel(produtos.get(idDoProduto));
-		carrinho.setValorTotalPorItem(
-				carrinho.getQuantidadeDeItensNoCarrinho() * produtos.get(idDoProduto).getPrecoDoProduto());
+		try {
+			String sql = "INSERT INTO carrinho (codigoDoProduto, nomdeDoProduto, precoDoProduto, precoTotal, quantidadeDeItensNoCarrinho) VALUES (?, ?, ?, ?, ?)";
+			PreparedStatement preparedStatement2 = connection.prepareStatement(sql);
 
-		return carrinho;
+			preparedStatement2.setInt(1, carrinho.getIdDoProduto());
+			preparedStatement2.setString(2, produtoModel.getNomeDoProduto());
+			preparedStatement2.setDouble(3, produtoModel.getPrecoDoProduto());
+			preparedStatement2.setDouble(4, carrinho.getValorTotalPorItem());
+			preparedStatement2.setInt(5, carrinho.getQuantidadeDeItensNoCarrinho());
+
+			preparedStatement2.execute();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public void adicionarNoCarrinho() {
+
+		
 	}
 }

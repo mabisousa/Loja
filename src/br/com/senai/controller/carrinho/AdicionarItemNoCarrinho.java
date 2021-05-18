@@ -14,9 +14,6 @@ public class AdicionarItemNoCarrinho {
 	private Scanner tec = new Scanner(System.in);
 	private ListaProduto listaProduto = new ListaProduto();
 	private ProdutoModel produtoModel = new ProdutoModel();
-
-	CarrinhoModel carrinho = new CarrinhoModel();
-
 	private Connection connection;
 
 	public AdicionarItemNoCarrinho() {
@@ -24,6 +21,7 @@ public class AdicionarItemNoCarrinho {
 	}
 
 	public ResultSet cadastrarItemNoCarrinho() {
+		CarrinhoModel carrinho = new CarrinhoModel();
 		PreparedStatement preparedStatement;
 
 		System.out.println("----- CARRINHO -----");
@@ -34,7 +32,6 @@ public class AdicionarItemNoCarrinho {
 		int idDoProduto = carrinho.getIdDoProduto();
 		System.out.println("Informe a quantidade desejada: ");
 		carrinho.setQuantidadeDeItensNoCarrinho(tec.nextInt());
-		carrinho.setValorTotalPorItem(carrinho.getQuantidadeDeItensNoCarrinho() * produtoModel.getPrecoDoProduto());
 		try {
 			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
 
@@ -48,6 +45,7 @@ public class AdicionarItemNoCarrinho {
 			} else {
 				produtoModel.setNomeDoProduto(resultSet.getString("nomdeDoProduto"));
 				produtoModel.setPrecoDoProduto(resultSet.getDouble("precoDoProduto"));
+				carrinho.setValorTotalPorItem(carrinho.getQuantidadeDeItensNoCarrinho() * produtoModel.getPrecoDoProduto());
 			}
 
 		} catch (Exception e) {
@@ -72,10 +70,5 @@ public class AdicionarItemNoCarrinho {
 		}
 		return null;
 
-	}
-
-	public void adicionarNoCarrinho() {
-
-		
 	}
 }

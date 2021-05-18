@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import br.com.dao.DataBaseConnection;
-import br.com.senai.model.CarrinhoModel;
 
 public class ListaCarrinho {
 	private Connection connection;

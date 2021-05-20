@@ -16,8 +16,7 @@ public class ListaCarrinho {
 	public ResultSet exibirCarrinho() {
 		PreparedStatement preparedStatement;
 		try {
-			String sql = "SELECT * FROM carrinho;";
-
+			String sql = "SELECT * FROM carrinho";
 			preparedStatement = connection.prepareStatement(sql);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -43,23 +42,4 @@ public class ListaCarrinho {
 		}
 	}
 
-	public void gerarCupom(String cliente) {
-		ListaCarrinho listaCarrinho = new ListaCarrinho();
-		PreparedStatement preparedStatement;
-		try {
-			String sql = "SELECT * FROM carrinho;";
-
-			preparedStatement = connection.prepareStatement(sql);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (!resultSet.next()) {
-				System.out.println("Não possui dados cadastrados");
-				return;
-			}
-		} catch (Exception e) {
-			return;
-		}
-		listaCarrinho.exibirCarrinho();
-		System.out.println("Cliente: " + cliente);
-	}
 }

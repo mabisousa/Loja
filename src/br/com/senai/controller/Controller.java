@@ -26,7 +26,9 @@ public class Controller {
 		System.out.println("5) Adicionar no Carrinho");
 		System.out.println("6) Exibir carrinho");
 		System.out.println("7) Gerar cupom");
-		System.out.println("9) Sair do sistema");
+		System.out.println("8) Cadastrar cliente");
+		System.out.println("9) Listar cliente");
+		System.out.println("10) Sair do sistema");
 		System.out.println("--------------------");
 	}
 

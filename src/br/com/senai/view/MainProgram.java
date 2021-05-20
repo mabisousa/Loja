@@ -1,6 +1,7 @@
 package br.com.senai.view;
 
 import br.com.senai.controller.carrinho.AdicionarItemNoCarrinho;
+import br.com.senai.controller.carrinho.FinalizarCompra;
 import br.com.senai.controller.carrinho.ListaCarrinho;
 import br.com.senai.controller.cliente.AdicionaCliente;
 import br.com.senai.controller.produto.CadastraProduto;
@@ -20,10 +21,9 @@ public class MainProgram {
 		EditaProduto editaProduto = new EditaProduto();
 		DeletaProduto deletaProduto = new DeletaProduto();
 		AdicionaCliente adicionaCliente = new AdicionaCliente();
+		FinalizarCompra finalizarCompra = new FinalizarCompra();
 		
 		boolean sair = false;
-
-		adicionaCliente.definirCliente();
 		
 		do {
 			Controller.menu();
@@ -43,15 +43,21 @@ public class MainProgram {
 				deletaProduto.removerProdutos();
 				break;
 			case 5:
-				adicionarCarrinho.cadastrarItemNoCarrinho();
+				adicionarCarrinho.CadastrarItemNoCarrinho();
 				break;
 			case 6:
 				listaCarrinho.exibirCarrinho();
 				break;
 			case 7:
-				//listaCarrinho.gerarCupom();
+				finalizarCompra.gerarCupom();
+				break;
+			case 8:
+				adicionaCliente.definirCliente();
 				break;
 			case 9:
+				finalizarCompra.listarCliente();
+				break;
+			case 10:
 				sair = true;
 				break;
 

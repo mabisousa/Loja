@@ -3,7 +3,6 @@ package br.com.senai.controller.produto;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Scanner;
 
 import br.com.dao.DataBaseConnection;
@@ -146,19 +145,6 @@ public class EditaProduto {
 		}
 
 		return produto;
-	}
-
-	public List<ProdutoModel> atualizaQuantidadeEValorTotal(List<ProdutoModel> produtos, int quantidade,
-			int idDoProduto) {
-		ProdutoModel produto = new ProdutoModel();
-
-		produto.setQuantidadeDeProduto(produtos.get(idDoProduto).getQuantidadeDeProduto() - quantidade);
-		produto.setSaldoEmEstoque(produtos.get(idDoProduto).getPrecoDoProduto() * produto.getQuantidadeDeProduto());
-		produto.setNomeDoProduto(produtos.get(idDoProduto).getNomeDoProduto());
-		produto.setPrecoDoProduto(produtos.get(idDoProduto).getPrecoDoProduto());
-		produtos.set(idDoProduto, produto);
-
-		return null;
 	}
 
 }

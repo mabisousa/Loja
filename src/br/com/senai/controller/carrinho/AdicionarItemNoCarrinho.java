@@ -20,7 +20,7 @@ public class AdicionarItemNoCarrinho {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
 
-	public ResultSet cadastrarItemNoCarrinho() {
+	public ResultSet CadastrarItemNoCarrinho() {
 		CarrinhoModel carrinho = new CarrinhoModel();
 		PreparedStatement preparedStatement;
 
@@ -28,10 +28,12 @@ public class AdicionarItemNoCarrinho {
 		listaProduto.listarProdutos();
 
 		System.out.println("Informe o ID do produto: ");
-		carrinho.setIdDoProduto(tec.nextInt());
-		int idDoProduto = carrinho.getIdDoProduto();
+		int idDoProduto = tec.nextInt();
+		carrinho.setIdDoProduto(idDoProduto);
 		System.out.println("Informe a quantidade desejada: ");
-		carrinho.setQuantidadeDeItensNoCarrinho(tec.nextInt());
+		int quantidade = tec.nextInt();
+		produtoModel.setQuantidadeDeProduto(quantidade);
+
 		try {
 			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
 
@@ -45,14 +47,14 @@ public class AdicionarItemNoCarrinho {
 			} else {
 				produtoModel.setNomeDoProduto(resultSet.getString("nomdeDoProduto"));
 				produtoModel.setPrecoDoProduto(resultSet.getDouble("precoDoProduto"));
-				carrinho.setValorTotalPorItem(carrinho.getQuantidadeDeItensNoCarrinho() * produtoModel.getPrecoDoProduto());
+				carrinho.setValorTotalPorItem(quantidade * produtoModel.getPrecoDoProduto());
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 		try {
 			String sql = "INSERT INTO carrinho (codigoDoProduto, nomdeDoProduto, precoDoProduto, precoTotal, quantidadeDeItensNoCarrinho) VALUES (?, ?, ?, ?, ?)";
 			PreparedStatement preparedStatement2 = connection.prepareStatement(sql);
@@ -61,14 +63,36 @@ public class AdicionarItemNoCarrinho {
 			preparedStatement2.setString(2, produtoModel.getNomeDoProduto());
 			preparedStatement2.setDouble(3, produtoModel.getPrecoDoProduto());
 			preparedStatement2.setDouble(4, carrinho.getValorTotalPorItem());
-			preparedStatement2.setInt(5, carrinho.getQuantidadeDeItensNoCarrinho());
+			preparedStatement2.setInt(5, produtoModel.getQuantidadeDeProduto());
 
 			preparedStatement2.execute();
 
+			atualizaQuantidadeEValorTotal(idDoProduto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
 
+		return null;
 	}
+
+	public void atualizaQuantidadeEValorTotal(int idDoProduto) {
+		try {
+			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoProduto);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				String sql2 = "UPDATE produto SET quantidadeDeProduto = ? WHERE codigoDoProduto = ?";
+				PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+				preparedStatement2.setInt(1,
+						resultSet.getInt("quantidadeDeProduto") - produtoModel.getQuantidadeDeProduto());
+				preparedStatement2.setInt(2, idDoProduto);
+				preparedStatement2.execute();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

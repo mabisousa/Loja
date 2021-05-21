@@ -33,6 +33,7 @@ public class AdicionarItemNoCarrinho {
 		System.out.println("Informe a quantidade desejada: ");
 		int quantidade = tec.nextInt();
 		produtoModel.setQuantidadeDeProduto(quantidade);
+		produtoModel.setSaldoEmEstoque(produtoModel.getQuantidadeDeProduto() * produtoModel.getPrecoDoProduto());
 
 		try {
 			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
@@ -83,11 +84,14 @@ public class AdicionarItemNoCarrinho {
 			ResultSet resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
-				String sql2 = "UPDATE produto SET quantidadeDeProduto = ? WHERE codigoDoProduto = ?";
+				String sql2 = "UPDATE produto SET quantidadeDeProduto = ?, saldoEmEstoque = ? WHERE codigoDoProduto = ?";
 				PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
 				preparedStatement2.setInt(1,
 						resultSet.getInt("quantidadeDeProduto") - produtoModel.getQuantidadeDeProduto());
-				preparedStatement2.setInt(2, idDoProduto);
+				preparedStatement2.setDouble(2,
+						(resultSet.getInt("quantidadeDeProduto") - produtoModel.getQuantidadeDeProduto())
+								* produtoModel.getPrecoDoProduto());
+				preparedStatement2.setInt(3, idDoProduto);
 				preparedStatement2.execute();
 			}
 		} catch (Exception e) {

@@ -8,17 +8,15 @@ import java.util.Scanner;
 import br.com.dao.DataBaseConnection;
 
 public class FinalizarCompra {
-	
+
 	private Connection connection;
+	private Scanner tec = new Scanner(System.in);;
 
 	public FinalizarCompra() {
 		connection = DataBaseConnection.getInstance().getConnection();
 	}
-	
-	public void gerarCupom() {
-		@SuppressWarnings("resource")
-		Scanner tec = new Scanner(System.in);
 
+	public void gerarCupom() {
 		listarCliente();
 		System.out.println("Qual cliente deseja finaliza a compra? ");
 		int idDoCliente = tec.nextInt();
@@ -55,6 +53,32 @@ public class FinalizarCompra {
 		}
 	}
 
+	public void somarPrecoTotal(int idDoCliente) {
+
+		ListaCarrinho listaCarrinho = new ListaCarrinho();
+		listaCarrinho.exibirCarrinho();
+
+		try {
+			String sql = "SELECT nome FROM cliente WHERE ID=(?)";
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, idDoCliente);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			String sql2 = "SELECT SUM(precoTotal) from carrinho";
+			PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
+			ResultSet resultSet2 = preparedStatement2.executeQuery();
+
+			if (resultSet.next()) {
+				System.out.println("Cliente: " + resultSet.getString("nome"));
+			}
+			if (resultSet2.next()) {
+				System.out.println("Valor total: R$" + resultSet2.getDouble("SUM(precoTotal)"));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void limpaCarrinho() {
 		try {
 			String sql = "DELETE FROM carrinho";
@@ -65,25 +89,4 @@ public class FinalizarCompra {
 		}
 	}
 
-	public void somarPrecoTotal(int idDoCliente) {
-		try {
-			String sql = "SELECT nome FROM cliente WHERE ID=(?)";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, idDoCliente);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			String sql2 = "SELECT SUM(precoTotal) from carrinho";
-			PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
-			ResultSet resultSet2 = preparedStatement2.executeQuery();
-
-			if (resultSet2.next()) {
-				System.out.println("O preço total foi " + resultSet2.getDouble("SUM(precoTotal)"));
-			}
-			if (resultSet.next()) {
-				System.out.println("Obrigado " + resultSet.getString("nome") + " por realizar sua compra");
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

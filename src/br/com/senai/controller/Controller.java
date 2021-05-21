@@ -25,10 +25,11 @@ public class Controller {
 		System.out.println("4) Remover item");
 		System.out.println("5) Adicionar no Carrinho");
 		System.out.println("6) Exibir carrinho");
-		System.out.println("7) Gerar cupom");
-		System.out.println("8) Cadastrar cliente");
-		System.out.println("9) Listar cliente");
-		System.out.println("10) Sair do sistema");
+		System.out.println("7) Remover produto do carrinho");
+		System.out.println("8) Gerar cupom");
+		System.out.println("9) Cadastrar cliente");
+		System.out.println("10) Listar cliente");
+		System.out.println("11) Sair do sistema");
 		System.out.println("--------------------");
 	}
 

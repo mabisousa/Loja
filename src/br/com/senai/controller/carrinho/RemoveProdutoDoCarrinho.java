@@ -6,13 +6,11 @@ import java.sql.ResultSet;
 import java.util.Scanner;
 
 import br.com.dao.DataBaseConnection;
-import br.com.senai.model.CarrinhoModel;
 import br.com.senai.model.ProdutoModel;
 
 public class RemoveProdutoDoCarrinho {
 	private ListaCarrinho listaCarrinho = new ListaCarrinho();
 	private ProdutoModel produtoModel = new ProdutoModel();
-	private CarrinhoModel carrinho = new CarrinhoModel();
 	private Scanner tec = new Scanner(System.in);
 	private Connection connection;
 
@@ -71,7 +69,7 @@ public class RemoveProdutoDoCarrinho {
 				if (resultSet.getInt("quantidadeDeItensNoCarrinho") < quantidade) {
 					System.out.println("Esse produto não possui essa quantidade");
 				} else if (resultSet.getInt("quantidadeDeItensNoCarrinho") == quantidade) {
-					removerProdutos(idDoProduto);
+					removerProdutos(idDoProduto, quantidade);
 				} else {
 					diminuirQuantidadeDeProdutoDoCarrinho(idDoProduto, quantidade);
 				}
@@ -86,35 +84,17 @@ public class RemoveProdutoDoCarrinho {
 
 	}
 
-	public void removerProdutos(int idDoProduto) {
-
-		produtoModel.setQuantidadeDeProduto(
-				produtoModel.getQuantidadeDeProduto() + carrinho.getQuantidadeDeItensNoCarrinho());
-
-		try {
-			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, idDoProduto);
-			ResultSet resultSet = preparedStatement.executeQuery();
-
-			if (resultSet.next()) {
-				String sql2 = "UPDATE produto SET quantidadeDeProduto = ?, saldoEmEstoque = ? WHERE codigoDoProduto = ?";
-				PreparedStatement preparedStatement2 = connection.prepareStatement(sql2);
-				int newQuantidade = carrinho.getQuantidadeDeItensNoCarrinho() + resultSet.getInt("quantidadeDeProduto");
-				preparedStatement2.setInt(1, newQuantidade);
-				preparedStatement2.setDouble(2, newQuantidade * resultSet.getDouble("precoDoProduto"));
-				preparedStatement2.setInt(3, idDoProduto);
-				preparedStatement2.execute();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void removerProdutos(int idDoProduto, int quantidade) {
+		PreparedStatement preparedStatement;
+		produtoModel.setQuantidadeDeProduto(produtoModel.getQuantidadeDeProduto() + quantidade);
+		produtoModel.setSaldoEmEstoque(produtoModel.getQuantidadeDeProduto() * produtoModel.getPrecoDoProduto());
 
 		try {
 			String sql = "DELETE FROM carrinho WHERE codigoDoProduto = ?";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setInt(1, idDoProduto);
 			preparedStatement.execute();
+			atualizaQuantidadeEValorTotal(idDoProduto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

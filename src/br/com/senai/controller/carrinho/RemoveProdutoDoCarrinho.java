@@ -86,25 +86,20 @@ public class RemoveProdutoDoCarrinho {
 
 	public void removerProdutos(int idDoProduto, int quantidade) {
 		PreparedStatement preparedStatement;
-		produtoModel.setQuantidadeDeProduto(produtoModel.getQuantidadeDeProduto() + quantidade);
-		produtoModel.setSaldoEmEstoque(produtoModel.getQuantidadeDeProduto() * produtoModel.getPrecoDoProduto());
 
 		try {
 			String sql = "DELETE FROM carrinho WHERE codigoDoProduto = ?";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setInt(1, idDoProduto);
 			preparedStatement.execute();
-			atualizaQuantidadeEValorTotal(idDoProduto);
+			atualizaQuantidadeEValorTotal(idDoProduto, quantidade);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void diminuirQuantidadeDeProdutoDoCarrinho(int idDoProduto, int quantidade) {
 		PreparedStatement preparedStatement;
-		produtoModel.setQuantidadeDeProduto(produtoModel.getQuantidadeDeProduto() + quantidade);
-		produtoModel.setSaldoEmEstoque(produtoModel.getQuantidadeDeProduto() * produtoModel.getPrecoDoProduto());
 
 		try {
 			String sql = "SELECT * FROM carrinho WHERE codigoDoProduto = ?";
@@ -121,18 +116,21 @@ public class RemoveProdutoDoCarrinho {
 				preparedStatement2.setInt(3, idDoProduto);
 				preparedStatement2.execute();
 
-				atualizaQuantidadeEValorTotal(idDoProduto);
+				atualizaQuantidadeEValorTotal(idDoProduto, quantidade);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void atualizaQuantidadeEValorTotal(int idDoProduto) {
+	public void atualizaQuantidadeEValorTotal(int idDoProduto, int quantidade) {
+		PreparedStatement preparedStatement;
+		produtoModel.setQuantidadeDeProduto(produtoModel.getQuantidadeDeProduto() + quantidade);
+		produtoModel.setSaldoEmEstoque(produtoModel.getQuantidadeDeProduto() * produtoModel.getPrecoDoProduto());
 
 		try {
 			String sql = "SELECT * FROM produto WHERE codigoDoProduto = ?";
-			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.setInt(1, idDoProduto);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -148,7 +146,5 @@ public class RemoveProdutoDoCarrinho {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }
